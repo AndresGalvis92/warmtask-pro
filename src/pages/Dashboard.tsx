@@ -69,7 +69,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar userRole={userRole || ""} userName={userName} />
+      <Navbar userRole={userRole || ""} userName={userName} userId={userId || ""} />
       <div className="container mx-auto px-4 py-8">
         {userRole === "admin" ? (
           <AdminDashboard userId={userId!} />

@@ -3,13 +3,15 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { LogOut, CheckSquare } from "lucide-react";
+import NotificationsDropdown from "./NotificationsDropdown";
 
 interface NavbarProps {
   userRole?: string;
   userName?: string;
+  userId?: string;
 }
 
-const Navbar = ({ userRole, userName }: NavbarProps) => {
+const Navbar = ({ userRole, userName, userId }: NavbarProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -31,6 +33,7 @@ const Navbar = ({ userRole, userName }: NavbarProps) => {
             <h1 className="text-xl font-bold text-foreground">TaskFlow</h1>
           </div>
           <div className="flex items-center gap-4">
+            <NotificationsDropdown userId={userId} />
             <div className="text-right">
               <p className="text-sm font-medium text-foreground">{userName}</p>
               <p className="text-xs text-muted-foreground capitalize">{userRole}</p>
