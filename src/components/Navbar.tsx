@@ -30,7 +30,7 @@ const Navbar = ({ userRole, userName, userId }: NavbarProps) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <CheckSquare className="h-6 w-6 text-primary" />
-            <h1 className="text-xl font-bold text-foreground">TaskFlow</h1>
+            <h1 className="text-xl font-bold text-foreground">Gestion 360</h1>
           </div>
           <div className="flex items-center gap-4">
             <NotificationsDropdown userId={userId} />

@@ -21,7 +21,7 @@ const Index = () => {
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-3 mb-6">
             <CheckSquare className="h-12 w-12 text-primary" />
-            <h1 className="text-5xl font-bold text-white">TaskFlow</h1>
+            <h1 className="text-5xl font-bold text-white">Gestion 360</h1>
           </div>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
             Sistema profesional de gestión de tareas para equipos empresariales
