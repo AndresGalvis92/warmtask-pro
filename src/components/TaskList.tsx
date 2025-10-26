@@ -45,6 +45,22 @@ const TaskList = ({ tasks, loading, onTaskUpdated, isAdmin }: TaskListProps) => 
   const { toast } = useToast();
 
   const handleStatusChange = async (taskId: string, newStatus: string) => {
+    // Obtener el usuario actual y su perfil
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // Obtener perfil del usuario actual
+    const { data: currentUserProfile } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .single();
+
+    // Obtener información de la tarea para la notificación
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    // Actualizar el estado de la tarea
     const { error } = await supabase
       .from("tasks")
       .update({ status: newStatus as "pending" | "in_progress" | "completed" })
@@ -56,13 +72,25 @@ const TaskList = ({ tasks, loading, onTaskUpdated, isAdmin }: TaskListProps) => 
         description: "No se pudo actualizar el estado",
         variant: "destructive",
       });
-    } else {
-      toast({
-        title: "Estado actualizado",
-        description: "El estado de la tarea ha sido actualizado",
-      });
-      onTaskUpdated();
+      return;
     }
+
+    // Crear notificación para el usuario asignado (si es diferente al usuario actual)
+    if (task.assigned_to && task.assigned_to !== user.id) {
+      await supabase.from("notifications").insert({
+        user_id: task.assigned_to,
+        title: "Estado de tarea actualizado",
+        message: `${currentUserProfile?.full_name || "Un usuario"} cambió el estado de "${task.title}" a ${statusLabels[newStatus as keyof typeof statusLabels]}`,
+        type: "task_update",
+        link: "/dashboard"
+      });
+    }
+
+    toast({
+      title: "Estado actualizado",
+      description: "El estado de la tarea ha sido actualizado",
+    });
+    onTaskUpdated();
   };
 
   const handleDeleteTask = async (taskId: string) => {
