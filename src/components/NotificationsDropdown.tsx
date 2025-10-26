@@ -34,7 +34,7 @@ const NotificationsDropdown = ({ userId }: NotificationsDropdownProps) => {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-0 bg-card" align="end">
+      <PopoverContent className="w-80 p-0 bg-card border border-border shadow-lg z-50" align="end">
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h3 className="font-semibold text-foreground">Notificaciones</h3>
           {unreadCount > 0 && (
