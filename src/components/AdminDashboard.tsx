@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import TaskForm from "./TaskForm";
 import TaskList from "./TaskList";
 import { Plus } from "lucide-react";
+import TaskStats from "./TaskStats";
 
 interface AdminDashboardProps {
   userId: string;
@@ -99,6 +100,8 @@ const AdminDashboard = ({ userId }: AdminDashboardProps) => {
         onTaskUpdated={fetchTasks}
         isAdmin={true}
       />
+
+      <TaskStats tasks={tasks} />
     </div>
   );
 };
