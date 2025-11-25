@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { Loader2, User, Mail, Users, Lock } from "lucide-react";
+import logo from "@/assets/gestion_360.png";
 
 const authSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -118,7 +119,10 @@ const Auth = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-warm p-4">
       <Card className="w-full max-w-md shadow-soft">
-        <CardHeader className="space-y-1">
+        <CardHeader className="space-y-4">
+          <div className="flex justify-center">
+            <img src={logo} alt="Gestion 360" className="h-16 w-auto" />
+          </div>
           <CardTitle className="text-2xl font-bold text-center">
             {isLogin ? "Iniciar Sesión" : "Crear Cuenta"}
           </CardTitle>
