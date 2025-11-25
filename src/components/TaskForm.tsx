@@ -1,3 +1,7 @@
+/**
+ * Componente de formulario para crear nuevas tareas
+ * Solo accesible por administradores
+ */
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -9,18 +13,22 @@ import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { Loader2 } from "lucide-react";
 
+// Props del componente
 interface TaskFormProps {
-  createdBy: string;
-  onSuccess: () => void;
-  onCancel: () => void;
+  createdBy: string; // ID del usuario que crea la tarea (admin)
+  onSuccess: () => void; // Callback cuando la tarea se crea exitosamente
+  onCancel: () => void; // Callback para cancelar la creación
 }
 
+// Interfaz para los usuarios disponibles para asignar
 interface User {
   id: string;
   full_name: string;
   email: string;
 }
 
+// Esquema de validación para las tareas
+// Valida título, descripción, usuario asignado y fecha de vencimiento
 const taskSchema = z.object({
   title: z.string().min(3, "El título debe tener al menos 3 caracteres").max(100),
   description: z.string().max(500).optional(),
@@ -29,14 +37,16 @@ const taskSchema = z.object({
 });
 
 const TaskForm = ({ createdBy, onSuccess, onCancel }: TaskFormProps) => {
+  // Estados del formulario
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>([]); // Lista de usuarios para asignar
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
+  // Cargar lista de usuarios disponibles al montar el componente
   useEffect(() => {
     const fetchUsers = async () => {
       const { data } = await supabase
@@ -52,6 +62,7 @@ const TaskForm = ({ createdBy, onSuccess, onCancel }: TaskFormProps) => {
     fetchUsers();
   }, []);
 
+  // Maneja el envío del formulario y creación de la tarea
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);

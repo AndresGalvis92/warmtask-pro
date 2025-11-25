@@ -1,3 +1,7 @@
+/**
+ * Página de inicio (landing page) de la aplicación
+ * Muestra información sobre Gestion 360 y redirige al dashboard si hay sesión activa
+ */
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,6 +11,7 @@ import { CheckSquare, Users, ClipboardList, TrendingUp } from "lucide-react";
 const Index = () => {
   const navigate = useNavigate();
 
+  // Redirigir al dashboard si el usuario ya está autenticado
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {

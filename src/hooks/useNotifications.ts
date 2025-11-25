@@ -1,7 +1,12 @@
+/**
+ * Hook personalizado para gestionar notificaciones de usuario
+ * Proporciona funciones para cargar, marcar como leídas y suscribirse a notificaciones en tiempo real
+ */
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+// Interfaz para el objeto de notificación
 export interface Notification {
   id: string;
   title: string;
@@ -17,6 +22,7 @@ export const useNotifications = (userId?: string) => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  // Obtiene las últimas 10 notificaciones del usuario
   const fetchNotifications = async () => {
     if (!userId) return;
 
@@ -37,6 +43,7 @@ export const useNotifications = (userId?: string) => {
     }
   };
 
+  // Marca una notificación específica como leída
   const markAsRead = async (notificationId: string) => {
     try {
       const { error } = await supabase
@@ -58,6 +65,7 @@ export const useNotifications = (userId?: string) => {
     }
   };
 
+  // Marca todas las notificaciones del usuario como leídas
   const markAllAsRead = async () => {
     if (!userId) return;
 
@@ -85,11 +93,13 @@ export const useNotifications = (userId?: string) => {
     }
   };
 
+  // Cargar notificaciones y suscribirse a cambios en tiempo real
   useEffect(() => {
     fetchNotifications();
 
     if (!userId) return;
 
+    // Suscribirse a cambios en la tabla de notificaciones
     const channel = supabase
       .channel("notifications-channel")
       .on(
@@ -111,6 +121,7 @@ export const useNotifications = (userId?: string) => {
     };
   }, [userId]);
 
+  // Calcular cantidad de notificaciones no leídas
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return {

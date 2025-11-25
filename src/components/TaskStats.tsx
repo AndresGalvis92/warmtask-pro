@@ -1,3 +1,7 @@
+/**
+ * Componente que muestra estadísticas de las tareas
+ * Cuenta y muestra el total de tareas, pendientes, en progreso y completadas
+ */
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, Clock, PlayCircle, ListTodo } from "lucide-react";
 
@@ -6,15 +10,17 @@ interface Task {
 }
 
 interface TaskStatsProps {
-  tasks: Task[];
+  tasks: Task[]; // Lista de tareas para calcular estadísticas
 }
 
 const TaskStats = ({ tasks }: TaskStatsProps) => {
+  // Calcular contadores de tareas por estado
   const pendingCount = tasks.filter(task => task.status === 'pending').length;
   const inProgressCount = tasks.filter(task => task.status === 'in_progress').length;
   const completedCount = tasks.filter(task => task.status === 'completed').length;
   const totalCount = tasks.length;
 
+  // Configuración de las tarjetas de estadísticas
   const stats = [
     {
       title: "Total de Tareas",

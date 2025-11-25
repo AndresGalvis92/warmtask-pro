@@ -1,3 +1,4 @@
+// Componente de autenticación que maneja registro e inicio de sesión
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +12,8 @@ import { z } from "zod";
 import { Loader2, User, Mail, Users, Lock } from "lucide-react";
 import logo from "@/assets/gestion_360.png";
 
+// Esquema de validación para los formularios de autenticación
+// Valida email, contraseña (mínimo 8 caracteres), nombre completo y confirmación de contraseña
 const authSchema = z.object({
   email: z.string().email("Email inválido"),
   password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
@@ -28,7 +31,9 @@ const authSchema = z.object({
 });
 
 const Auth = () => {
+  // Estado para controlar si se muestra login o registro
   const [isLogin, setIsLogin] = useState(true);
+  // Estados del formulario
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -38,6 +43,7 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Redirigir al dashboard si el usuario ya tiene sesión activa
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
@@ -54,6 +60,7 @@ const Auth = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  // Maneja tanto el inicio de sesión como el registro
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);

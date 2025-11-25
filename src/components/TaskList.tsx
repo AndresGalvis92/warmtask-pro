@@ -1,3 +1,8 @@
+/**
+ * Componente que muestra la lista de tareas en formato de tarjetas
+ * Permite cambiar el estado de las tareas y eliminarlas (solo admin)
+ * Envía notificaciones cuando se actualiza el estado de una tarea
+ */
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +13,7 @@ import { Clock, User, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
+// Interfaz para el objeto de tarea
 interface Task {
   id: string;
   title: string;
@@ -22,19 +28,22 @@ interface Task {
   } | null;
 }
 
+// Props del componente
 interface TaskListProps {
-  tasks: Task[];
-  loading: boolean;
-  onTaskUpdated: () => void;
-  isAdmin: boolean;
+  tasks: Task[]; // Lista de tareas a mostrar
+  loading: boolean; // Estado de carga
+  onTaskUpdated: () => void; // Callback cuando se actualiza una tarea
+  isAdmin: boolean; // Indica si el usuario es administrador
 }
 
+// Colores para los badges según el estado de la tarea
 const statusColors = {
   pending: "bg-warning/10 text-warning border-warning/20",
   in_progress: "bg-primary/10 text-primary border-primary/20",
   completed: "bg-success/10 text-success border-success/20",
 };
 
+// Etiquetas en español para los estados
 const statusLabels = {
   pending: "Pendiente",
   in_progress: "En Progreso",
@@ -44,12 +53,16 @@ const statusLabels = {
 const TaskList = ({ tasks, loading, onTaskUpdated, isAdmin }: TaskListProps) => {
   const { toast } = useToast();
 
+  /**
+   * Maneja el cambio de estado de una tarea
+   * Actualiza la tarea en la base de datos y envía una notificación al usuario asignado
+   */
   const handleStatusChange = async (taskId: string, newStatus: string) => {
     // Obtener el usuario actual y su perfil
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    // Obtener perfil del usuario actual
+    // Obtener perfil del usuario actual para la notificación
     const { data: currentUserProfile } = await supabase
       .from("profiles")
       .select("full_name")
@@ -60,7 +73,7 @@ const TaskList = ({ tasks, loading, onTaskUpdated, isAdmin }: TaskListProps) => 
     const task = tasks.find(t => t.id === taskId);
     if (!task) return;
 
-    // Actualizar el estado de la tarea
+    // Actualizar el estado de la tarea en la base de datos
     const { error } = await supabase
       .from("tasks")
       .update({ status: newStatus as "pending" | "in_progress" | "completed" })
@@ -93,6 +106,10 @@ const TaskList = ({ tasks, loading, onTaskUpdated, isAdmin }: TaskListProps) => 
     onTaskUpdated();
   };
 
+  /**
+   * Maneja la eliminación de una tarea (solo disponible para administradores)
+   * Requiere confirmación del usuario antes de eliminar
+   */
   const handleDeleteTask = async (taskId: string) => {
     if (!confirm("¿Estás seguro de que quieres eliminar esta tarea?")) return;
 

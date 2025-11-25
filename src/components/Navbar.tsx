@@ -1,3 +1,7 @@
+/**
+ * Barra de navegación principal de la aplicación
+ * Muestra el logo, nombre del usuario, rol, notificaciones y botón de cerrar sesión
+ */
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -7,15 +11,16 @@ import NotificationsDropdown from "./NotificationsDropdown";
 import logo from "@/assets/gestion_360.png";
 
 interface NavbarProps {
-  userRole?: string;
-  userName?: string;
-  userId?: string;
+  userRole?: string; // Rol del usuario (admin o user)
+  userName?: string; // Nombre completo del usuario
+  userId?: string; // ID del usuario para cargar notificaciones
 }
 
 const Navbar = ({ userRole, userName, userId }: NavbarProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Maneja el cierre de sesión del usuario
   const handleLogout = async () => {
     await supabase.auth.signOut();
     toast({
