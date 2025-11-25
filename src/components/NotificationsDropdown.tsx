@@ -1,3 +1,8 @@
+/**
+ * Componente de menú desplegable para notificaciones
+ * Muestra notificaciones del usuario con opciones para marcar como leídas
+ * Se actualiza en tiempo real cuando llegan nuevas notificaciones
+ */
 import { Bell, Check, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,10 +17,11 @@ import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 
 interface NotificationsDropdownProps {
-  userId?: string;
+  userId?: string; // ID del usuario para cargar sus notificaciones
 }
 
 const NotificationsDropdown = ({ userId }: NotificationsDropdownProps) => {
+  // Hook personalizado que maneja el estado de notificaciones
   const { notifications, unreadCount, markAsRead, markAllAsRead } =
     useNotifications(userId);
 

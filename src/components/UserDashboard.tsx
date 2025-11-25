@@ -1,3 +1,8 @@
+/**
+ * Dashboard para usuarios regulares
+ * Muestra las tareas asignadas al usuario y estadísticas
+ * Los usuarios solo pueden ver y actualizar el estado de sus tareas asignadas
+ */
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -5,9 +10,10 @@ import TaskList from "./TaskList";
 import TaskStats from "./TaskStats";
 
 interface UserDashboardProps {
-  userId: string;
+  userId: string; // ID del usuario para filtrar sus tareas
 }
 
+// Interfaz para el objeto de tarea
 interface Task {
   id: string;
   title: string;
@@ -27,6 +33,7 @@ const UserDashboard = ({ userId }: UserDashboardProps) => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  // Obtiene las tareas asignadas al usuario actual
   const fetchTasks = async () => {
     setLoading(true);
     const { data, error } = await supabase

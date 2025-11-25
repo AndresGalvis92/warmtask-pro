@@ -1,3 +1,8 @@
+/**
+ * Dashboard de administrador
+ * Permite crear nuevas tareas, asignarlas a usuarios y ver todas las tareas del sistema
+ * Los administradores pueden ver, editar y eliminar todas las tareas
+ */
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -9,9 +14,10 @@ import { Plus } from "lucide-react";
 import TaskStats from "./TaskStats";
 
 interface AdminDashboardProps {
-  userId: string;
+  userId: string; // ID del usuario administrador
 }
 
+// Interfaz para el objeto de tarea
 interface Task {
   id: string;
   title: string;
@@ -28,10 +34,11 @@ interface Task {
 
 const AdminDashboard = ({ userId }: AdminDashboardProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(false); // Controla la visibilidad del formulario
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  // Obtiene todas las tareas del sistema (admin ve todas)
   const fetchTasks = async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -57,10 +64,12 @@ const AdminDashboard = ({ userId }: AdminDashboardProps) => {
     setLoading(false);
   };
 
+  // Cargar tareas al montar el componente
   useEffect(() => {
     fetchTasks();
   }, []);
 
+  // Callback cuando se crea una tarea exitosamente
   const handleTaskCreated = () => {
     setShowForm(false);
     fetchTasks();

@@ -1,3 +1,8 @@
+/**
+ * Página principal del dashboard
+ * Verifica autenticación y muestra el dashboard apropiado según el rol del usuario
+ * Administradores ven AdminDashboard, usuarios regulares ven UserDashboard
+ */
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,15 +13,17 @@ import { Loader2 } from "lucide-react";
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null); // Rol del usuario (admin o user)
   const [userId, setUserId] = useState<string | null>(null);
   const [userName, setUserName] = useState<string>("");
   const navigate = useNavigate();
 
+  // Verificar autenticación y cargar datos del usuario al montar
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
+      // Redirigir al login si no hay sesión
       if (!session) {
         navigate("/auth");
         return;
@@ -24,7 +31,7 @@ const Dashboard = () => {
 
       setUserId(session.user.id);
 
-      // Get user profile and role
+      // Obtener perfil del usuario con su nombre completo
       const { data: profile } = await supabase
         .from("profiles")
         .select("full_name")
@@ -35,6 +42,7 @@ const Dashboard = () => {
         setUserName(profile.full_name);
       }
 
+      // Obtener rol del usuario desde la tabla user_roles
       const { data: roleData } = await supabase
         .from("user_roles")
         .select("role")
@@ -50,6 +58,7 @@ const Dashboard = () => {
 
     checkAuth();
 
+    // Suscribirse a cambios de autenticación
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!session) {
         navigate("/auth");
@@ -59,6 +68,7 @@ const Dashboard = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  // Mostrar spinner mientras se verifica la autenticación
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
