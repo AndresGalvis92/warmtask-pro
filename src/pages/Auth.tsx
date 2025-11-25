@@ -121,7 +121,7 @@ const Auth = () => {
       <Card className="w-full max-w-md shadow-soft">
         <CardHeader className="space-y-4">
           <div className="flex justify-center">
-            <img src={logo} alt="Gestion 360" className="h-16 w-auto" />
+            <img src={logo} alt="Gestion 360" className="h-32 w-auto" />
           </div>
           <CardTitle className="text-2xl font-bold text-center">
             {isLogin ? "Iniciar Sesión" : "Crear Cuenta"}
